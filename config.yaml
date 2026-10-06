@@ -1,0 +1,17 @@
+fixed:
+  discipline: "SW"
+  test_level: "ST"
+choices:
+  test_type: ["FULL", "REGR", "SHORT"]
+  test_result: ["Passed", "conditionally accepted", "failed"]
+  reason_for_test: ["Release for production", "Sample Qualification"]
+customer_map:
+  GEN: "GEN"
+  HMC: "HMC"
+  KMC: "KMC"
+excel:
+  variant_sheet: "Variant_1"
+  header_row: 4
+  part_number_row: 15
+jira:
+  server: "https://ix.jira.automotive.cloud"
