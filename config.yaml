@@ -60,3 +60,25 @@ pm_roster:
   - {org: "UX KOEMs PM 3", title: "인턴",       label: "JinGu Han",       sstr: "Han, JinGu"}
 jira:
   server: "https://ix.jira.automotive.cloud"
+
+# ===== 추가 설정 =====
+gen2_values:
+  designation: 'HUD_WI_INI_HKMC_2ND_P/F WW_2.6"TFT SLAVE'
+  order: "DG-081925"
+
+principal_dept: "PM"
+
+distribution:
+  to: "Lee, GeonSang; Park, Cheulgyu; Yu, KangJo; Kim, WooJung; Kang, SeungHyun"
+  cc: "Lee, TaeHoon02; Yoo, DongKyun; Shin, JinSu; Kim, MinJeong; Lee, JooHan; Kim, DaeHyeon; Choi, Byoungguk; Cho, HyunIn; Jin, JaeYoung; Ko, HeeJeong"
+
+signoff:
+  designed_by: "Ying.Hu@aumovio.com"
+  released_by: "Dongwoo.Park@aumovio.com"
+
+tech_docs_fixed:
+  - name: "SRSC_GEN2"
+    revision: "1.12"
+
+tested_parts_issue: "KKZ-8606"
+jira_browse: "https://ix.jira.automotive.cloud/browse/"
