@@ -1,77 +1,100 @@
 from __future__ import annotations
+import datetime
 from docx import Document
 
+def _norm(s):
+    return s.strip().lower().rstrip(":").strip()
 
-def _set_value_after_label(doc, label, value):
-    target = label.lower().rstrip(":").strip()
+def _fill_label_row(doc, label, value):
+    target = _norm(label)
+    for tbl in doc.tables:
+        for row in tbl.rows:
+            try:
+                cells = row.cells
+            except Exception:
+                continue
+            for i, c in enumerate(cells[:-1]):
+                if _norm(c.text) == target:
+                    filled = False
+                    for j in range(i + 1, len(cells)):
+                        nxt = cells[j]
+                        if nxt.text.strip().endswith(":"):
+                            break
+                        if not nxt.text.strip():
+                            nxt.text = value
+                            filled = True
+                    if filled:
+                        return True
+    return False
+
+def _fill_paragraph(doc, label, value):
+    lab = label.lower().rstrip(":").strip()
+    for p in doc.paragraphs:
+        txt = p.text.strip()
+        if txt.lower().startswith(lab):
+            after = txt.split(":", 1)[-1].strip() if ":" in txt else ""
+            if not after:
+                p.add_run(" " + value)
+                return True
+    return False
+
+def _check_reason(doc, reason):
     for tbl in doc.tables:
         for row in tbl.rows:
             cells = row.cells
-            for i, c in enumerate(cells[:-1]):
-                if c.text.strip().lower().rstrip(":").strip() == target:
-                    if not cells[i + 1].text.strip():
-                        cells[i + 1].text = value
-                    return True
+            for i, c in enumerate(cells):
+                if reason.lower() in c.text.strip().lower() and i > 0:
+                    if not cells[i - 1].text.strip():
+                        cells[i - 1].text = "X"
+                        return True
     return False
 
+def _norm_td(tech_docs):
+    """tech_docs를 (name, revision) 튜플 리스트로 정규화 (dict/튜플 모두 허용)."""
+    out = []
+    for d in tech_docs or []:
+        if isinstance(d, dict):
+            out.append((d.get("name", ""), d.get("revision", "")))
+        elif isinstance(d, (list, tuple)) and len(d) >= 2:
+            out.append((d[0], d[1]))
+    return out
 
-def _apply_metrics(doc, metrics: dict):
-    """teRA Metrics 값을 Metrics 표에 복사 (B)."""
-    for key, val in metrics.items():
-        _set_value_after_label(doc, key, val)
-
-
-def _ensure_test_matrix(doc, matrix: list):
-    """
-    teRA D.Test Matrix 를 템플릿의 동일 표에 복사 (B).
-    헤더에 'Test Objective' 가 있는 표를 찾아, 데이터 행이 비어 있으면 추가.
-    """
-    if not matrix:
+def _apply_tech_docs(doc, tech_docs):
+    tds = _norm_td(tech_docs)
+    if not tds:
         return
     for tbl in doc.tables:
-        header = [c.text.strip() for c in tbl.rows[0].cells]
-        if not any("Test Objective" in h for h in header):
-            continue
-        existing = sum(1 for r in tbl.rows[1:] if r.cells[0].text.strip())
-        if existing > 0:
-            return  # 이미 채워져 있으면 건드리지 않음
-        for data_row in matrix[1:]:  # matrix[0] 은 헤더
-            cells = tbl.add_row().cells
-            for i, val in enumerate(data_row):
-                if i < len(cells):
-                    cells[i].text = val
-        return
-
-
-def _set_test_period(doc, period: str):
-    if not period:
-        return
-    for p in doc.paragraphs:
-        txt = p.text.strip().lower()
-        if txt.startswith("test period") and ":" not in p.text.split("period")[-1]:
-            p.add_run(f" {period}")
+        header = " ".join(c.text.strip().lower() for c in tbl.rows[0].cells)
+        if "technical" in header or "revision" in header or "doors" in header:
+            idx = 0
+            for row in tbl.rows[1:]:
+                if idx >= len(tds):
+                    break
+                cells = row.cells
+                name, rev = tds[idx]
+                if len(cells) >= 2 and not cells[0].text.strip():
+                    cells[0].text = str(name)
+                    cells[1].text = str(rev)
+                    idx += 1
             return
 
-
-def fill_sstr(template_path: str, out_path: str, data: dict,
-              terra: dict | None = None) -> str:
-    """
-    data  : 라벨->값 (Customer, Part Number, Test Type 등)
-    terra : terra_reader.load_terra_fields() 결과 (B: metrics/matrix/period 복사)
-    """
+def fill_sstr(template_path, out_path, data, paragraphs=None, reason=None,
+              terra=None, tech_docs=None):
     doc = Document(template_path)
     missed = []
     for label, value in data.items():
         if value in (None, ""):
             continue
-        if not _set_value_after_label(doc, label, str(value)):
+        if not _fill_label_row(doc, label, str(value)):
             missed.append(label)
-
-    if terra:
-        _apply_metrics(doc, terra.get("metrics", {}))
-        _ensure_test_matrix(doc, terra.get("test_matrix", []))
-        _set_test_period(doc, terra.get("test_period"))
-
+    if paragraphs:
+        for label, value in paragraphs.items():
+            if value not in (None, ""):
+                _fill_paragraph(doc, label, str(value))
+    if reason:
+        _check_reason(doc, reason)
+    if tech_docs:
+        _apply_tech_docs(doc, tech_docs)
     doc.save(out_path)
     if missed:
         print("[경고] 채우지 못한 라벨:", missed)
