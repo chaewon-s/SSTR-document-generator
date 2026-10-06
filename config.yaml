@@ -11,7 +11,30 @@ customer_map:
   KMC: "KMC"
 excel:
   variant_sheet: "Variant_1"
-  header_row: 4
-  part_number_row: 15
+  # 1-based row numbers (reader subtracts 1). Verified against eepxtool Variant_1:
+  #   row 5  = variant codes (GEN_RS4PE, HMC_GN7PE, ...)
+  #   row 16 = Part Number (Customer EO)  e.g. 94310-T4100
+  header_row: 5
+  part_number_row: 16
+# 3-generation project detection (concept item 1)
+gen3_projects:
+  - "SX3"
+  - "SX3i"
+  - "NQ6"
+  - "DN8 PE2"
+  - "MV PE"
+  - "CL4m PE"
+  - "SV1 PE"
+  - "NI1i"
+  - "LX3 PE"
+  - "OV1 PE"
+  - "CT PE"
+  - "MQ5"
+  - "KA5"
+  - "GL3 PE2"
+gen3_values:
+  designation: "HUD_WI_INI_HMG_3RD_P/F WW_2.6_"
+  order: "DCHN-094088-1200"
+  strip_suffix: "-1200"
 jira:
   server: "https://ix.jira.automotive.cloud"
