@@ -36,5 +36,27 @@ gen3_values:
   designation: "HUD_WI_INI_HMG_3RD_P/F WW_2.6_"
   order: "DCHN-094088-1200"
   strip_suffix: "-1200"
+# PM roster (concept item 2 - English names).
+# "label" is shown in the UI; "sstr" is written into the SSTR Principal field
+# using the document's "Lastname, Firstname" convention.
+pm_roster:
+  - {org: "UX KOEMs PM 1", title: "부문장",     label: "Donghyun Lee",    sstr: "Lee, Donghyun"}
+  - {org: "UX KOEMs PM 1", title: "책임매니저", label: "Ara Jo",          sstr: "Jo, Ara"}
+  - {org: "UX KOEMs PM 1", title: "책임매니저", label: "HyoJin An",       sstr: "An, HyoJin"}
+  - {org: "UX KOEMs PM 1", title: "책임매니저", label: "JeungHo Kim",     sstr: "Kim, JeungHo"}
+  - {org: "UX KOEMs PM 1", title: "책임매니저", label: "JinHong Park",    sstr: "Park, JinHong"}
+  - {org: "UX KOEMs PM 1", title: "책임매니저", label: "JoonHyeong Lee",  sstr: "Lee, JoonHyeong"}
+  - {org: "UX KOEMs PM 1", title: "책임매니저", label: "MyoungWon Kim",   sstr: "Kim, MyoungWon"}
+  - {org: "UX KOEMs PM 1", title: "인턴",       label: "SeoHwa Chung",    sstr: "Chung, SeoHwa"}
+  - {org: "UX KOEMs PM 2", title: "본부장",     label: "KyuTae Cho",      sstr: "Cho, KyuTae"}
+  - {org: "UX KOEMs PM 2", title: "책임매니저", label: "Cheulgyu Park",   sstr: "Park, CheulGyu"}
+  - {org: "UX KOEMs PM 2", title: "책임매니저", label: "DaeWook Park",    sstr: "Park, DaeWook"}
+  - {org: "UX KOEMs PM 2", title: "책임매니저", label: "GeonSang Lee",    sstr: "Lee, GeonSang"}
+  - {org: "UX KOEMs PM 2", title: "책임매니저", label: "KangJo Yu",       sstr: "Yu, KangJo"}
+  - {org: "UX KOEMs PM 2", title: "책임매니저", label: "WooJung Kim",     sstr: "Kim, WooJung"}
+  - {org: "UX KOEMs PM 3", title: "팀장",       label: "Younglok Choi",   sstr: "Choi, Younglok"}
+  - {org: "UX KOEMs PM 3", title: "책임매니저", label: "MoonCheol Kim",   sstr: "Kim, MoonCheol"}
+  - {org: "UX KOEMs PM 3", title: "책임매니저", label: "SeiHyon Oh",      sstr: "Oh, SeiHyon"}
+  - {org: "UX KOEMs PM 3", title: "인턴",       label: "JinGu Han",       sstr: "Han, JinGu"}
 jira:
   server: "https://ix.jira.automotive.cloud"
